@@ -1,1 +1,37 @@
-reference/.venv/
+# Environment files and secrets
+.env
+.env.*
+!.env.example
+*.pem
+*.key
+
+# Python
+.venv/
+venv/
+env/
+__pycache__/
+*.py[cod]
+.pytest_cache/
+.mypy_cache/
+.ruff_cache/
+
+# Node and frontend build output
+node_modules/
+dist/
+coverage/
+
+# Local databases and logs
+*.db
+*.sqlite
+*.sqlite3
+*.log
+*.tmp
+tmp/
+
+# Editor and operating system files
+.vscode/*
+!.vscode/settings.json
+!.vscode/launch.json
+.idea/
+.DS_Store
+Thumbs.db

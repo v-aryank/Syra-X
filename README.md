@@ -2,7 +2,7 @@
 SYRA X
 A browser-based conversational AI assistant with a state-aware animated core, optional browser voice interaction, and Gemini-powered responses with Google Search grounding when useful.
 
-Status: Architecture and documentation baseline. Implementation status must be verified from the repository; this README does not imply that features are already implemented.
+Status: Phase 1 foundation. The React/Vite shell and FastAPI health endpoint are implemented; assistant, persistence, voice, and browser core features remain future phases.
 
 Vision
 SYRA X brings together:
@@ -66,39 +66,49 @@ Python version selected and pinned during backend setup.
 A Gemini API key for real AI responses.
 A modern browser. Voice features depend on browser and device support.
 Local development
-The commands below are the intended workflow once the frontend and backend have been initialized. They are not runnable until the corresponding project files exist.
+Requirements: Python 3.12.3 and Node.js 22.23.3 (also recorded in `backend/.python-version` and `frontend/.nvmrc`). The frontend uses pinned npm dependencies; the backend uses pinned Python dependencies.
 
-Backend
+### Backend (terminal 1)
+
+```bash
 cd backend
-python3 -m venv .venv
-source .venv/bin/activate
+if [ ! -d venv ]; then python3.12 -m venv venv; fi
+source venv/bin/activate
 pip install -r requirements.txt
-cp .env.example .env
-# Add GEMINI_API_KEY to backend/.env
-uvicorn app.main:app --reload
-Expected local API base URL: http://127.0.0.1:8000
+[ -f .env ] || cp .env.example .env
+# Edit FRONTEND_ORIGINS only if your frontend uses a different origin.
+set -a
+source .env
+set +a
+./venv/bin/uvicorn app.main:app --reload --host 127.0.0.1 --port 8000
+```
 
-Frontend
-In a second terminal:
+Expected local API base URL: `http://127.0.0.1:8000`
+FastAPI docs: http://127.0.0.1:8000/docs
 
+### Frontend (terminal 2)
+
+```bash
 cd frontend
 npm install
+[ -f .env ] || cp .env.example .env
 npm run dev
-Expected local frontend URL: http://localhost:5173
+```
 
-Use the actual scripts and ports defined by the implementation if they differ; update this README accordingly.
+Expected local frontend URL: `http://localhost:5173`
+Stop either server with `Ctrl+C` in its terminal. Keep `backend/venv/`, frontend `node_modules/`, and local `.env` files untracked; `.gitignore` excludes them.
+
+The frontend reads the public backend URL from `VITE_API_BASE_URL` in `frontend/.env`. It defaults to `http://127.0.0.1:8000`. The current page checks `/api/v1/health` and displays connection status.
 
 Environment configuration
-Backend configuration should be documented in backend/.env.example. Expected settings include:
+Backend configuration is documented in `backend/.env.example`:
 
-GEMINI_API_KEY=replace_with_server_side_key
-GEMINI_MODEL=replace_with_verified_model_id
-DATABASE_URL=sqlite:///./syra_x.db
 FRONTEND_ORIGINS=http://localhost:5173
 APP_ENV=development
-Never commit a real .env file.
-Never expose GEMINI_API_KEY through frontend variables or browser code.
-Verify the selected Gemini model and Google Search grounding configuration against the installed SDK version.
+
+Gemini and database configuration are not active in this foundation phase. Never commit a real `.env` file or expose provider credentials through frontend variables or browser code.
+
+Backend verification: from `backend/`, activate `venv` and run `pytest`. The health endpoint is `GET /api/v1/health` and returns `{"status":"ok","service":"syra-x-api"}`.
 Voice support
 Voice is an optional browser capability:
 
