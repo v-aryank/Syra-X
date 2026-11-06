@@ -1,0 +1,13 @@
+{
+  "version": "0.2.0",
+  "configurations": [
+    {
+      "name": "Run SYRA Core",
+      "type": "debugpy",
+      "request": "launch",
+      "program": "${workspaceFolder}/reference/original-python-core.py",
+      "console": "integratedTerminal",
+      "cwd": "${workspaceFolder}/reference"
+    }
+  ]
+}
